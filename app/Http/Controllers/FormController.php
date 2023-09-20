@@ -6,26 +6,28 @@ use App\Http\Requests\FormRequestJD;
 use App\Models\Preoperational;
 use App\Models\PreoperationalCategory;
 use App\Models\PreoperationalItem;
+use App\Validators\FormValidator;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 
 class FormController extends Controller
 {
-    public function save(FormRequestJD $request)
+    public function save(Request $request)
     {
 
         $submitType = $request->input('submit_type');
 
-        $validator = Validator::make($request->all(), $request->rules());
-
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
         if ($submitType === 'Limpiar') {
             $request->session()->put('categories', []);
+            return redirect()->back()->withInput();
         } elseif ($submitType === 'Enviar') {
 
+            $validator = Validator::make($request->all(), FormValidator::rules(), FormValidator::messages());
 
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
             $form = new Preoperational();
             $form->name = $request->input('form');
             $form->save();
@@ -52,13 +54,13 @@ class FormController extends Controller
                 $vector[] = ['name' => ''];
             }
             $request->session()->put('categories', $vector);
-            return redirect()->back()->withErrors($validator)->withInput();
+            return redirect()->back()->withInput();
         } elseif (str_contains($submitType, "Eliminar")) {
             $position = explode(".", $submitType)[1];
             $vector = $request->input('categories');
             unset($vector[$position]);
             $request->session()->put('categories', $vector);
-            return redirect()->back()->withErrors($validator)->withInput();
+            return redirect()->back()->withInput();
         } elseif (str_contains($submitType, "elemento")) {
             $position = explode(".", $submitType)[1];
             $vector = $request->input('categories');
@@ -69,7 +71,7 @@ class FormController extends Controller
                 $vector[$position]['elements'][] = "";
             }
             $request->session()->put('categories', $vector);
-            return redirect()->back()->withErrors($validator)->withInput();
+            return redirect()->back()->withInput();
         } elseif (str_contains($submitType, "delete")) {
 
             $position = explode(".", $submitType)[1];
@@ -77,9 +79,9 @@ class FormController extends Controller
             $vector = $request->input('categories');
             unset($vector[$position]['elements'][$position2]);
             $request->session()->put('categories', $vector);
-            return redirect()->back()->withErrors($validator)->withInput();
+            return redirect()->back()->withInput();
         }
 
-        return redirect()->back()->withErrors($validator)->withInput();
+        return redirect()->back()->withInput();
     }
 }
