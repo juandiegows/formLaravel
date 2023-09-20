@@ -15,6 +15,7 @@
                 display: flex;
                 gap: 20px;
                 margin-bottom: 10px;
+                align-items: flex-start;
             }
             .col {
                 flex-direction: column;
@@ -63,13 +64,16 @@
                     <div class="flex ">
 
                         <input type="text" name="categories[{{ $key }}][name]"
-                        value="{{ old('categories.' . $key . '.name', $category['name']) }}" id="">
+                        value="{{ old('categories.' . $key . '.name') }}" id="">
 
                         <input type="submit" value="Eliminar.{{ $key }}" id="Eliminar.{{ $key }}"
                          hidden name="submit_type">
                          <label class="btn" for="Eliminar.{{ $key }}">Eliminar</label>
 
                     </div>
+                    @error('categories.' . $key . '.name')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
                     <div class="flex">
                         <input type="number" name="categories[{{ $key }}][cantidad]" min="1"
                          value="{{ old('categories['.$key.'][cantidad]') }}" >
@@ -81,8 +85,14 @@
                         @forelse ($category['elements'] ?? [] as $keyE => $element)
                         <div class="flex element">
 
-                            <input type="text" name="categories[{{ $key }}][elements][]"
-                             value="{{ old('categories.' . $key . '.elements.'.$keyE) }}" id="">
+                            <div class="flex col">
+                                <input type="text" name="categories[{{ $key }}][elements][]"
+                                value="{{ old('categories.' . $key . '.elements.'.$keyE) }}" id="">
+                                @error('categories.' . $key . '.elements.'.$keyE)
+                                <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
 
                             <input type="submit" value="delete.{{ $key }}.{{ $keyE }}"
                              id="delete.{{ $key }}.{{ $keyE }}"

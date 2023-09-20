@@ -21,7 +21,9 @@ class FormController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-        if ($submitType === 'Enviar') {
+        if ($submitType === 'Limpiar') {
+            $request->session()->put('categories', []);
+        } elseif ($submitType === 'Enviar') {
 
 
             $form = new Preoperational();
