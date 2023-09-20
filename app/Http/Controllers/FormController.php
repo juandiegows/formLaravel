@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\FormRequestJD;
 use App\Models\Preoperational;
+use App\Models\PreoperationalCategory;
+use App\Models\PreoperationalItem;
 use Illuminate\Support\Facades\Validator;
 
 class FormController extends Controller
@@ -24,6 +26,20 @@ class FormController extends Controller
             $form = new Preoperational();
             $form->name = $request->input('form');
             $form->save();
+            $vector = $request->input('categories');
+            foreach ($vector as  $value) {
+                $category = new PreoperationalCategory();
+                $category->Preoperational_id = $form->id;
+                $category->name = $value['name'];
+                $category->save();
+                foreach ($value['elements'] as $element) {
+                    $elementSave = new PreoperationalItem();
+                    $elementSave->name = $element;
+                    $elementSave->preoperational_item_type_id = 1;
+                    $elementSave->preoperational_category_id = $category->id;
+                    $elementSave->save();
+                }
+            }
         } elseif ($submitType === 'Agregar Categoria') {
             $vector = $request->input('categories');
             $cantidad =  $request->input('cantidad');
@@ -50,7 +66,7 @@ class FormController extends Controller
             $request->session()->put('categories', $vector);
             return redirect()->back()->withErrors($validator)->withInput();
         } elseif (str_contains($submitType, "delete")) {
-            
+
             $position = explode(".", $submitType)[1];
             $position2 = explode(".", $submitType)[2];
             $vector = $request->input('categories');
