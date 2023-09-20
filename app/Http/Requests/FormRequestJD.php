@@ -27,4 +27,11 @@ class FormRequestJD extends FormRequest
             'categories.*.elements.*' => "required"
         ];
     }
+    public function messages(): array
+    {
+        return [
+            'required' => 'Este campo es obligatorio',
+            'unique' => "Este campo debe ser unico"
+        ];
+    }
 }
