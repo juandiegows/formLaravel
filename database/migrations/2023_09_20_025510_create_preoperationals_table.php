@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('preoperationals', function (Blueprint $table) {
             $table->id();
-            $table->date('date');
+            $table->string('name');
             $table->timestamps();
         });
     }
