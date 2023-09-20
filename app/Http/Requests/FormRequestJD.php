@@ -22,7 +22,7 @@ class FormRequestJD extends FormRequest
     public function rules(): array
     {
         return [
-            'form' => 'required|unique:preoperationals,name'
+            // 'form' => 'required|unique:preoperationals,name'
         ];
     }
 }

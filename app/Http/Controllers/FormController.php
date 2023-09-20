@@ -28,8 +28,33 @@ class FormController extends Controller
             $vector = $request->input('categories');
             $cantidad =  $request->input('cantidad');
             for ($i = 1; $i <= $cantidad; $i++) {
-                $vector[] = "";
+                $vector[] = ['name' => ''];
             }
+            $request->session()->put('categories', $vector);
+            return redirect()->back()->withErrors($validator)->withInput();
+        } elseif (str_contains($submitType, "Eliminar")) {
+            $position = explode(".", $submitType)[1];
+            $vector = $request->input('categories');
+            unset($vector[$position]);
+            $request->session()->put('categories', $vector);
+            return redirect()->back()->withErrors($validator)->withInput();
+        } elseif (str_contains($submitType, "elemento")) {
+            $position = explode(".", $submitType)[1];
+            $vector = $request->input('categories');
+            $cantidad = $vector[$position]['cantidad'];
+
+
+            for ($i = 1; $i <= $cantidad; $i++) {
+                $vector[$position]['elements'][] = "";
+            }
+            $request->session()->put('categories', $vector);
+            return redirect()->back()->withErrors($validator)->withInput();
+        } elseif (str_contains($submitType, "delete")) {
+            
+            $position = explode(".", $submitType)[1];
+            $position2 = explode(".", $submitType)[2];
+            $vector = $request->input('categories');
+            unset($vector[$position]['elements'][$position2]);
             $request->session()->put('categories', $vector);
             return redirect()->back()->withErrors($validator)->withInput();
         }

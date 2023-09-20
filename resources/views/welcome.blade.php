@@ -14,6 +14,7 @@
             .flex {
                 display: flex;
                 gap: 20px;
+                margin-bottom: 10px;
             }
             .col {
                 flex-direction: column;
@@ -21,6 +22,19 @@
 
             .group{
                 margin-bottom: 40px;
+            }
+            .btn {
+                background-color: red;
+                color: white;
+                padding: 3px 10px;
+                cursor: pointer;
+            }
+            .btn-sucess{
+                background-color: green;
+            }
+
+            .element{
+                margin-left: 100px;
             }
         </style>
         <form action="{{ route('save') }}" method="post">
@@ -42,8 +56,46 @@
                     <input type="submit" id="addCategory" value="Agregar Categoria" name="submit_type">
                 </div>
 
-                @forelse (session('categories') ?? [] as $category )
-                   <input type="text" name="categories[]" value="{{ $category }}" id="">
+                @forelse (session('categories') ?? [] as $key => $category )
+                <div class="flex col">
+                    <div class="flex ">
+
+                        <input type="text" name="categories[{{ $key }}][name]"
+                        value="{{ old('categories.' . $key . '.name', $category['name']) }}" id="">
+
+                        <input type="submit" value="Eliminar.{{ $key }}" id="Eliminar.{{ $key }}"
+                         hidden name="submit_type">
+                         <label class="btn" for="Eliminar.{{ $key }}">Eliminar</label>
+
+                    </div>
+                    <div class="flex">
+                        <input type="number" name="categories[{{ $key }}][cantidad]" min="1"
+                         value="{{ old('categories['.$key.'][cantidad]') }}" >
+                        <input type="submit" hidden id="elemento.{{ $key }}"
+                         value="elemento.{{ $key }}" name="submit_type">
+                        <label class="btn btn-sucess" for="elemento.{{ $key }}">Agregar Elemento</label>
+                    </div>
+                    <div class="flex col">
+                        @forelse ($category['elements'] ?? [] as $keyE => $element)
+                        <div class="flex element">
+
+                            <input type="text" name="categories[{{ $key }}][elements][]"
+                             value="{{ old('categories.' . $key . '.elements.0', $category['name']) }}" id="">
+
+                            <input type="submit" value="delete.{{ $key }}.{{ $keyE }}"
+                             id="delete.{{ $key }}.{{ $keyE }}"
+                             hidden name="submit_type">
+                             <label class="btn" for="delete.{{ $key }}.{{ $keyE }}">Eliminar</label>
+
+                        </div>
+                        @empty
+                        No hay elementos
+                        @endforelse
+                    </div>
+
+                </div>
+
+
                 @empty
                     <h2>No hay categorias</h2>
                 @endforelse
