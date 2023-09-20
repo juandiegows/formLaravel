@@ -6,8 +6,10 @@ use App\Http\Requests\FormRequestJD;
 use App\Models\Preoperational;
 use App\Models\PreoperationalCategory;
 use App\Models\PreoperationalItem;
+use App\Models\PreoperationalItemType;
 use App\Validators\FormValidator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 
@@ -15,6 +17,7 @@ class FormController extends Controller
 {
     public function save(Request $request)
     {
+
 
         $submitType = $request->input('submit_type');
 
@@ -28,30 +31,42 @@ class FormController extends Controller
             if ($validator->fails()) {
                 return redirect()->back()->withErrors($validator)->withInput();
             }
-            $form = new Preoperational();
-            $form->name = $request->input('form');
-            $form->save();
-            $vector = $request->input('categories');
-            foreach ($vector as  $value) {
-                $category = new PreoperationalCategory();
-                $category->Preoperational_id = $form->id;
-                $category->name = $value['name'];
-                $category->save();
-                foreach ($value['elements'] as $element) {
-                    $elementSave = new PreoperationalItem();
-                    $elementSave->name = $element;
-                    $elementSave->preoperational_item_type_id = 1;
-                    $elementSave->preoperational_category_id = $category->id;
-                    $elementSave->save();
+            DB::beginTransaction();
+            try {
+                $withError = false;
+                $form = new Preoperational();
+                $form->name = $request->input('form');
+                $form->save();
+                $vector = $request->input('categories');
+                foreach ($vector as  $value) {
+                    $category = new PreoperationalCategory();
+                    $category->Preoperational_id = $form->id;
+                    $category->name = $value['name'];
+                    $category->save();
+                    foreach ($value['elements'] as $element) {
+                        $elementSave = new PreoperationalItem();
+                        $elementSave->name = $element['name'];
+                        $elementSave->preoperational_item_type_id = $element['preoperational_item_type_id'];;
+                        $elementSave->preoperational_category_id = $category->id;
+                        $elementSave->save();
+                    }
                 }
+                $request->session()->put('categories', []);
+                if ($withError) {
+                    DB::rollBack();
+                } else {
+                    DB::commit();
+                }
+                return Redirect()->route('home')->with(["messageJD" => "Se ha guardado correctamente"]);
+            } catch (\Throwable $th) {
+                DB::rollback();
+                dd($th);
             }
-            $request->session()->put('categories', []);
-            return Redirect()->route('home')->with(["messageJD" => "Se ha guardado correctamente"]);
         } elseif ($submitType === 'Agregar Categoria') {
             $vector = $request->input('categories');
             $cantidad =  $request->input('cantidad');
             for ($i = 1; $i <= $cantidad; $i++) {
-                $vector[] = ['name' => ''];
+                $vector[] = ['name' => '', 'cantidad' => 1];
             }
             $request->session()->put('categories', $vector);
             return redirect()->back()->withInput();
@@ -66,11 +81,11 @@ class FormController extends Controller
             $vector = $request->input('categories');
             $cantidad = $vector[$position]['cantidad'];
 
-
             for ($i = 1; $i <= $cantidad; $i++) {
-                $vector[$position]['elements'][] = "";
+                $vector[$position]['elements'][] = ['name' => '', 'preoperational_item_type_id' => 1];
             }
             $request->session()->put('categories', $vector);
+
             return redirect()->back()->withInput();
         } elseif (str_contains($submitType, "delete")) {
 

@@ -10,6 +10,9 @@
     </head>
     <body class="antialiased">
 
+        @php
+            $itemTypes = App\Models\PreoperationalItemType::all();
+        @endphp
         <style>
             .flex {
                 display: flex;
@@ -76,9 +79,10 @@
                     @enderror
                     <div class="flex">
                         <input type="number" name="categories[{{ $key }}][cantidad]" min="1"
-                         value="{{ old('categories['.$key.'][cantidad]') }}" >
+                        value="{{ $categories[$key]['cantidad'] ?? 1 }}" >
                         <input type="submit" hidden id="elemento.{{ $key }}"
-                         value="elemento.{{ $key }}" name="submit_type">
+                         value="elemento.{{ $key }}"
+                         value="{{ old('categories.'.$key.'.cantidad') }}" name="submit_type">
                         <label class="btn btn-sucess" for="elemento.{{ $key }}">Agregar Elemento</label>
                     </div>
                     <div class="flex col">
@@ -86,8 +90,8 @@
                         <div class="flex element">
 
                             <div class="flex col">
-                                <input type="text" name="categories[{{ $key }}][elements][]"
-                                value="{{ old('categories.' . $key . '.elements.'.$keyE) }}" id="">
+                                <input type="text" name="categories[{{ $key }}][elements][{{ $keyE }}][name]"
+                                value="{{ old('categories.' . $key . '.elements.'.$keyE.'.name') }}" id="">
                                 @error('categories.' . $key . '.elements.'.$keyE)
                                 <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
@@ -98,6 +102,16 @@
                              id="delete.{{ $key }}.{{ $keyE }}"
                              hidden name="submit_type">
                              <label class="btn" for="delete.{{ $key }}.{{ $keyE }}">Eliminar</label>
+
+                             <select  name="categories[{{ $key }}][elements][{{ $keyE }}][preoperational_item_type_id]"
+                             value="{{ old('categories.' . $key . '.elements.'.$keyE.'.preoperational_item_type_id') }}"
+                             id="">
+                                @forelse ($itemTypes as $type )
+                                  <option value="{{  $type->id  }}"> {{ $type->name }}</option>
+                                @empty
+                                    No hay datos
+                                @endforelse
+                             </select>
 
                         </div>
                         @empty
