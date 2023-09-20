@@ -37,6 +37,7 @@
                 margin-left: 100px;
             }
         </style>
+        {{ $messageJD  ?? "" }}
         <form action="{{ route('save') }}" method="post">
             @csrf
             <div class="flex col group">
@@ -44,6 +45,7 @@
                     <input type="text" name="form" value="{{ old('form') }}"
                      placeholder="Ingrese el nomrbe del formulario">
                     <input type="submit" value="Enviar" id="save" name="submit_type">
+                    <input type="submit" value="Limpiar" id="Limpiar" name="submit_type">
                 </div>
 
                 @error('form')
@@ -80,7 +82,7 @@
                         <div class="flex element">
 
                             <input type="text" name="categories[{{ $key }}][elements][]"
-                             value="{{ old('categories.' . $key . '.elements.0', $category['name']) }}" id="">
+                             value="{{ old('categories.' . $key . '.elements'.$keyE) }}" id="">
 
                             <input type="submit" value="delete.{{ $key }}.{{ $keyE }}"
                              id="delete.{{ $key }}.{{ $keyE }}"

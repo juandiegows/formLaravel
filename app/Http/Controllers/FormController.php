@@ -6,6 +6,7 @@ use App\Http\Requests\FormRequestJD;
 use App\Models\Preoperational;
 use App\Models\PreoperationalCategory;
 use App\Models\PreoperationalItem;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 
 class FormController extends Controller
@@ -40,6 +41,8 @@ class FormController extends Controller
                     $elementSave->save();
                 }
             }
+            $request->session()->put('categories', []);
+            return Redirect()->route('home')->with(["messageJD" => "Se ha guardado correctamente"]);
         } elseif ($submitType === 'Agregar Categoria') {
             $vector = $request->input('categories');
             $cantidad =  $request->input('cantidad');
