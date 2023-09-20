@@ -82,7 +82,7 @@
                         <div class="flex element">
 
                             <input type="text" name="categories[{{ $key }}][elements][]"
-                             value="{{ old('categories.' . $key . '.elements'.$keyE) }}" id="">
+                             value="{{ old('categories.' . $key . '.elements.'.$keyE) }}" id="">
 
                             <input type="submit" value="delete.{{ $key }}.{{ $keyE }}"
                              id="delete.{{ $key }}.{{ $keyE }}"
