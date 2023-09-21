@@ -46,7 +46,7 @@ class FormController extends Controller
                     foreach ($value['elements'] as $element) {
                         $elementSave = new PreoperationalItem();
                         $elementSave->name = $element['name'];
-                        $elementSave->preoperational_item_type_id = $element['preoperational_item_type_id'];;
+                        $elementSave->preoperational_item_type_id = $element['preoperational_item_type_id'];
                         $elementSave->preoperational_category_id = $category->id;
                         $elementSave->save();
                     }
@@ -95,8 +95,10 @@ class FormController extends Controller
             unset($vector[$position]['elements'][$position2]);
             $request->session()->put('categories', $vector);
             return redirect()->back()->withInput();
+        } else {
+            $vector = $request->input('categories');
+            $request->session()->put('categories', $vector);
+            return redirect()->back()->withInput();
         }
-
-        return redirect()->back()->withInput();
     }
 }

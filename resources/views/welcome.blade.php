@@ -42,7 +42,7 @@
             }
         </style>
         {{ $messageJD  ?? "" }}
-        <form action="{{ route('save') }}" method="post">
+        <form action="{{ route('save') }}" method="post" id="form">
             @csrf
             <div class="flex col group">
                 <div class="flex">
@@ -103,16 +103,49 @@
                              hidden name="submit_type">
                              <label class="btn" for="delete.{{ $key }}.{{ $keyE }}">Eliminar</label>
 
+                             <script>
+
+                                function enviarForm() {
+                                    let formulario = document.getElementById('form').submit();
+                                    formulario.submit();
+
+                                }
+                             </script>
+
                              <select  name="categories[{{ $key }}][elements][{{ $keyE }}][preoperational_item_type_id]"
-                             value="{{ old('categories.' . $key . '.elements.'.$keyE.'.preoperational_item_type_id') }}"
-                             id="">
-                                @forelse ($itemTypes as $type )
-                                  <option value="{{  $type->id  }}"> {{ $type->name }}</option>
+                             onchange="enviarForm()">
+                                   @forelse ($itemTypes as $type )
+
+                                    @if ($category['elements'][$keyE]['preoperational_item_type_id'] == $type->id)
+                                    <option value="{{  $type->id  }}"
+                                       selected>  {{ $type->id }}
+                                         {{ $type->name }}</option>
+                                    @else
+                                    <option value="{{  $type->id  }}" >
+                                        {{ $type->id }}
+                                          {{ $type->name }}</option>
+                                    @endif
+
                                 @empty
                                     No hay datos
                                 @endforelse
                              </select>
-
+                            @if ($category['elements'][$keyE]['preoperational_item_type_id'] == 1)
+                                    <input type="text">
+                            @else
+                                    <div class="flex">
+                                        <div class="flex">
+                                            <input type="radio" name="check-{{ $key }}-{{ $keyE }}"
+                                             id="bueno-{{ $key }}-{{ $keyE }}">
+                                            <label for="bueno-{{ $key }}-{{ $keyE }}"> Bueno</label>
+                                        </div>
+                                        <div class="flex">
+                                            <input type="radio" name="check-{{ $key }}-{{ $keyE }}"
+                                            id="malo-{{ $key }}-{{ $keyE }}">
+                                            <label for="malo-{{ $key }}-{{ $keyE }}"> Malo</label>
+                                        </div>
+                                    </div>
+                            @endif
                         </div>
                         @empty
                         No hay elementos
