@@ -10,6 +10,37 @@ class FormValidator
 
     public static function rules(): array
     {
+        $array = [
+            [
+                "name" => "",
+                "cantidad" => "",
+                "elementos" => [
+                    [
+                        'name' =>  "",
+                        'type' => 1
+                    ], [
+                        'name' =>  "",
+                        'type' => 1
+                    ]
+                ],
+
+            ],
+            [
+                "name" => "",
+                "cantidad" => "",
+                "elementos" => [
+                    [
+                        'name' =>  "",
+                        'type' => 1
+                    ],
+                    [
+                        'name' =>  "",
+                        'type' => 1
+                    ]
+                ],
+
+            ]
+        ];
         return [
             'form' => 'required|unique:preoperationals,name',
             'categories.*.name' => "required",

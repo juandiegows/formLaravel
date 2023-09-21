@@ -35,12 +35,25 @@ class FormController extends Controller
                 $form->name = $request->input('form');
                 $form->save();
                 $vector = $request->input('categories');
-                foreach ($vector as  $value) {
+                foreach ($vector as $index => $value) {
                     $category = new PreoperationalCategory();
                     $category->Preoperational_id = $form->id;
                     $category->name = $value['name'];
                     $category->save();
-                    foreach ($value['elements'] as $element) {
+                    $name = $value['name'];
+                    $count = collect($vector)->filter(function ($category) use ($name) {
+                        return  strtolower($category['name']) === strtolower($name);
+                    })->count();
+
+                    if ($count >= 2) {
+                        $withError = true;
+                        $validator->errors()->add(
+                            "categories.$index.name",
+                            "No puede haber más de una categoria con el mismo nombre
+                             (" . $value["name"] . " => " . strtolower($value["name"]) . ")."
+                        );
+                    }
+                    foreach ($value['elements'] ?? [] as $element) {
                         $elementSave = new PreoperationalItem();
                         $elementSave->name = $element['name'];
                         $elementSave->preoperational_item_type_id = $element['preoperational_item_type_id'];
@@ -51,6 +64,9 @@ class FormController extends Controller
                 $request->session()->put('categories', []);
                 if ($withError) {
                     DB::rollBack();
+                    $vector = $request->input('categories');
+                    $request->session()->put('categories', $vector);
+                    return redirect()->back()->withInput()->withErrors($validator);
                 } else {
                     DB::commit();
                 }
