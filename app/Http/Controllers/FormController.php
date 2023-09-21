@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\FormRequestJD;
 use App\Models\Preoperational;
 use App\Models\PreoperationalCategory;
 use App\Models\PreoperationalItem;
-use App\Models\PreoperationalItemType;
 use App\Validators\FormValidator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 
 class FormController extends Controller

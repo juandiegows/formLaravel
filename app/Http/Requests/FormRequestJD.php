@@ -24,7 +24,7 @@ class FormRequestJD extends FormRequest
         return [
             'form' => 'required|unique:preoperationals,name',
             'categories.*.name' => "required",
-            'categories.*.elements.*' => "required"
+            'categories.*.elements.*.name' => "required"
         ];
     }
     public function messages(): array

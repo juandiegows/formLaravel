@@ -92,7 +92,7 @@
                             <div class="flex col">
                                 <input type="text" name="categories[{{ $key }}][elements][{{ $keyE }}][name]"
                                 value="{{ old('categories.' . $key . '.elements.'.$keyE.'.name') }}" id="">
-                                @error('categories.' . $key . '.elements.'.$keyE)
+                                @error('categories.' . $key . '.elements.'.$keyE.'.name')
                                 <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
                             </div>

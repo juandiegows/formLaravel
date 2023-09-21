@@ -13,7 +13,7 @@ class FormValidator
         return [
             'form' => 'required|unique:preoperationals,name',
             'categories.*.name' => "required",
-            'categories.*.elements.*' => "required"
+            'categories.*.elements.*.name' => "required"
         ];
     }
     public static function messages(): array
