@@ -53,6 +53,13 @@ class FormController extends Controller
                              (" . $value["name"] . " => " . strtolower($value["name"]) . ")."
                         );
                     }
+                    if (!isset($value['elements'])) {
+                        $withError = true;
+                        $validator->errors()->add(
+                            "categories.$index.name",
+                            "Debe tener al menos un elemento"
+                        );
+                    }
                     foreach ($value['elements'] ?? [] as $element) {
                         $elementSave = new PreoperationalItem();
                         $elementSave->name = $element['name'];
