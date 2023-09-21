@@ -60,10 +60,22 @@ class FormController extends Controller
                             "Debe tener al menos un elemento"
                         );
                     }
-                    foreach ($value['elements'] ?? [] as $element) {
+                    foreach ($value['elements'] ?? [] as $indexE => $itemE) {
+                        $name = $itemE['name'];
+                        $count = collect($value['elements'])->filter(function ($element) use ($name) {
+                            return  strtolower($element['name']) === strtolower($name);
+                        })->count();
+
+                        if ($count >= 2) {
+                            $validator->errors()->add(
+                                "categories.$index.elements.$indexE.name",
+                                "No puede haber más de un elemento de la categoria con el mismo nombre
+                                 (" . $itemE["name"] . " => " . strtolower($itemE["name"]) . ")."
+                            );
+                        }
                         $elementSave = new PreoperationalItem();
-                        $elementSave->name = $element['name'];
-                        $elementSave->preoperational_item_type_id = $element['preoperational_item_type_id'];
+                        $elementSave->name = $itemE['name'];
+                        $elementSave->preoperational_item_type_id = $itemE['preoperational_item_type_id'];
                         $elementSave->preoperational_category_id = $category->id;
                         $elementSave->save();
                     }
