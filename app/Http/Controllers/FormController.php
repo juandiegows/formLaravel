@@ -103,6 +103,7 @@ class FormController extends Controller
             $request->session()->put('categories', $vector);
             return redirect()->back()->withInput();
         } elseif (str_contains($submitType, "Eliminar")) {
+
             $position = explode(".", $submitType)[1];
             $vector = $request->input('categories');
             unset($vector[$position]);
@@ -113,6 +114,7 @@ class FormController extends Controller
             $vector = $request->input('categories');
             $cantidad = $vector[$position]['cantidad'];
 
+            
             for ($i = 1; $i <= $cantidad; $i++) {
                 $vector[$position]['elements'][] = ['name' => '', 'preoperational_item_type_id' => 1];
             }
