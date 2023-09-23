@@ -109,9 +109,16 @@
         .alert-danger {
             color: red;
         }
+
+        .title {
+            color: green;
+            font-size: 30px;
+            margin-bottom: 30px;
+        }
     </style>
-    {{ $messageJD ?? '' }}
+
     <form action="{{ route('save') }}" class="form" method="post" id="form">
+        <h1 class="title">Agregar Formulario</h1>
         @csrf
         <div class="flex col group">
             <div class="flex">
