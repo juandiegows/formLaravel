@@ -105,6 +105,10 @@
             padding: 20px;
             border-radius: 10px;
         }
+
+        .alert-danger {
+            color: red;
+        }
     </style>
     {{ $messageJD ?? '' }}
     <form action="{{ route('save') }}" class="form" method="post" id="form">
@@ -123,7 +127,8 @@
         </div>
 
         <div class="flex">
-            <input type="number" name="cantidad" min="1" value="{{ old('cantidad') }}">
+            <input type="number" placeholder="Cantidad de categoria" name="cantidad" min="1"
+                value="{{ old('cantidad') }}">
             <input type="submit" id="addCategory" class=" btn green" value="Agregar Categoria" name="submit_type">
         </div>
 
